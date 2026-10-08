@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#111111">
+  <title>Alastempur — Shoe Care POS</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-brand">
+      <div class="brand-mark">A</div>
+      <div>
+        <div class="brand-name">Alastempur</div>
+        <div class="brand-sub">Shoe Care POS</div>
+      </div>
+    </div>
+    <div class="auth-layout">
+      <div class="auth-intro">
+        <p class="eyebrow">WORKSPACE</p>
+        <h1>Kelola perawatan sepatu dengan lebih sederhana.</h1>
+        <p>Pesanan, proses pengerjaan, pelanggan, pembayaran, dan laporan dalam satu tempat.</p>
+        <div class="auth-note">Minimal. Cepat. Terintegrasi dengan Supabase.</div>
+      </div>
+      <div class="auth-card">
+        <div id="loginView" class="auth-view">
+          <p class="eyebrow">MASUK</p>
+          <h2>Selamat datang</h2>
+          <p class="muted">Masuk ke workspace Alastempur.</p>
+          <form id="loginForm">
+            <label>Email<input id="loginEmail" type="email" autocomplete="email" required></label>
+            <label>Password<div class="password-wrap"><input id="loginPassword" type="password" autocomplete="current-password" required><button type="button" class="icon-btn" data-toggle-password="loginPassword">Lihat</button></div></label>
+            <button class="btn btn-primary full" type="submit">Masuk</button>
+          </form>
+          <div class="auth-links"><button class="link-btn" data-auth-view="forgotView">Lupa password?</button><button class="link-btn" data-auth-view="registerView">Buat akun</button></div>
+        </div>
+
+        <div id="registerView" class="auth-view hidden">
+          <p class="eyebrow">AKUN BARU</p>
+          <h2>Daftar Alastempur</h2>
+          <p class="muted">Buat akun operator untuk mengakses POS.</p>
+          <form id="registerForm">
+            <label>Nama lengkap<input id="registerName" type="text" autocomplete="name" required></label>
+            <label>No. telepon<input id="registerPhone" type="tel" inputmode="numeric" maxlength="14" placeholder="10–14 digit" required></label>
+            <label>Email<input id="registerEmail" type="email" autocomplete="email" required></label>
+            <label>Password<div class="password-wrap"><input id="registerPassword" type="password" autocomplete="new-password" minlength="8" required><button type="button" class="icon-btn" data-toggle-password="registerPassword">Lihat</button></div></label>
+            <label>Konfirmasi password<input id="registerConfirm" type="password" autocomplete="new-password" minlength="8" required></label>
+            <button class="btn btn-primary full" type="submit">Daftar</button>
+          </form>
+          <div class="auth-links"><button class="link-btn" data-auth-view="loginView">Sudah punya akun? Masuk</button></div>
+        </div>
+
+        <div id="forgotView" class="auth-view hidden">
+          <p class="eyebrow">PEMULIHAN</p>
+          <h2>Lupa password?</h2>
+          <p class="muted">Masukkan email. Kami akan mengirim link untuk membuat password baru.</p>
+          <form id="forgotForm">
+            <label>Email<input id="forgotEmail" type="email" autocomplete="email" required></label>
+            <button class="btn btn-primary full" type="submit">Kirim link reset</button>
+          </form>
+          <div class="auth-links"><button class="link-btn" data-auth-view="loginView">Kembali ke login</button></div>
+        </div>
+
+        <div id="resetView" class="auth-view hidden">
+          <p class="eyebrow">PASSWORD BARU</p>
+          <h2>Atur password</h2>
+          <p class="muted">Buat password baru untuk akun Alastempur.</p>
+          <form id="resetForm">
+            <label>Password baru<input id="resetPassword" type="password" minlength="8" autocomplete="new-password" required></label>
+            <label>Konfirmasi password<input id="resetConfirm" type="password" minlength="8" autocomplete="new-password" required></label>
+            <button class="btn btn-primary full" type="submit">Simpan password</button>
+          </form>
+        </div>
+
+        <div id="authDiagnostics" class="diagnostics hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="appScreen" class="app-screen hidden">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><div class="brand-mark small">A</div><div><strong>Alastempur</strong><span>Shoe Care POS</span></div></div>
+      <nav>
+        <button class="nav-item active" data-page="dashboard">Dashboard</button>
+        <button class="nav-item" data-page="orders">Pesanan</button>
+        <button class="nav-item" data-page="kanban">Kanban</button>
+        <button class="nav-item" data-page="customers">Pelanggan</button>
+        <button class="nav-item" data-page="services">Layanan</button>
+        <button class="nav-item" data-page="payments">Pembayaran</button>
+        <button class="nav-item" data-page="reports">Laporan</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="connection"><span id="connectionDot"></span><span id="connectionText">Memeriksa...</span></div>
+        <button id="logoutBtn" class="btn btn-ghost full">Keluar</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><p class="eyebrow" id="pageEyebrow">OVERVIEW</p><h1 id="pageTitle">Dashboard</h1></div>
+        <div class="user-menu"><div class="avatar" id="userAvatar">A</div><div><strong id="userName">Operator</strong><span id="userRole">Kasir</span></div></div>
+      </header>
+
+      <section id="page-dashboard" class="page">
+        <div class="stats-grid">
+          <div class="stat"><span>Pesanan aktif</span><strong id="statActive">0</strong></div>
+          <div class="stat"><span>Siap diambil</span><strong id="statReady">0</strong></div>
+          <div class="stat"><span>Pendapatan</span><strong id="statRevenue">Rp0</strong></div>
+          <div class="stat"><span>Pelanggan</span><strong id="statCustomers">0</strong></div>
+        </div>
+        <div class="section-head"><div><p class="eyebrow">TERBARU</p><h2>Pesanan terbaru</h2></div><button class="btn btn-primary" data-page="orders">+ Pesanan</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Pelanggan</th><th>Layanan</th><th>Status</th><th>Total</th></tr></thead><tbody id="recentOrders"></tbody></table></div>
+      </section>
+
+      <section id="page-orders" class="page hidden">
+        <div class="section-head"><div><p class="eyebrow">TRANSAKSI</p><h2>Pesanan</h2></div><button class="btn btn-primary" id="newOrderBtn">+ Pesanan baru</button></div>
+        <div class="toolbar"><input id="orderSearch" placeholder="Cari kode, nama, nomor telepon..."><select id="orderStatusFilter"><option value="">Semua status</option></select></div>
+        <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Pelanggan</th><th>Telepon</th><th>Status</th><th>Pembayaran</th><th>Total</th><th>Aksi</th></tr></thead><tbody id="ordersTable"></tbody></table></div>
+      </section>
+
+      <section id="page-kanban" class="page hidden">
+        <div class="section-head"><div><p class="eyebrow">WORKFLOW</p><h2>Kanban pengerjaan</h2></div></div>
+        <div id="kanbanBoard" class="kanban"></div>
+      </section>
+
+      <section id="page-customers" class="page hidden">
+        <div class="section-head"><div><p class="eyebrow">CRM</p><h2>Pelanggan</h2></div></div>
+        <div class="toolbar"><input id="customerSearch" placeholder="Cari pelanggan..."></div>
+        <div class="table-wrap"><table><thead><tr><th>Nama</th><th>Telepon</th><th>Pesanan</th><th>Total transaksi</th></tr></thead><tbody id="customersTable"></tbody></table></div>
+      </section>
+
+      <section id="page-services" class="page hidden">
+        <div class="section-head"><div><p class="eyebrow">MASTER DATA</p><h2>Layanan</h2></div><button class="btn btn-primary" id="newServiceBtn">+ Layanan</button></div>
+        <div class="table-wrap"><table><thead><tr><th>Nama layanan</th><th>Harga</th><th>Aktif</th><th>Aksi</th></tr></thead><tbody id="servicesTable"></tbody></table></div>
+      </section>
+
+      <section id="page-payments" class="page hidden">
+        <div class="section-head"><div><p class="eyebrow">KEUANGAN</p><h2>Pembayaran</h2></div></div>
+        <div class="stats-grid"><div class="stat"><span>Total transaksi</span><strong id="paymentCount">0</strong></div><div class="stat"><span>Total tagihan</span><strong id="paymentTotal">Rp0</strong></div><div class="stat"><span>Sudah dibayar</span><strong id="paymentPaid">Rp0</strong></div><div class="stat"><span>Sisa</span><strong id="paymentDue">Rp0</strong></div></div>
+        <div class="table-wrap"><table><thead><tr><th>Kode</th><th>Pelanggan</th><th>Total</th><th>Dibayar</th><th>Sisa</th><th>Status</th></tr></thead><tbody id="paymentsTable"></tbody></table></div>
+      </section>
+
+      <section id="page-reports" class="page hidden">
+        <div class="section-head"><div><p class="eyebrow">ANALYTICS</p><h2>Laporan ringkas</h2></div></div>
+        <div class="stats-grid"><div class="stat"><span>Omzet</span><strong id="reportRevenue">Rp0</strong></div><div class="stat"><span>Pesanan selesai</span><strong id="reportDone">0</strong></div><div class="stat"><span>Rata-rata order</span><strong id="reportAverage">Rp0</strong></div><div class="stat"><span>Order aktif</span><strong id="reportActive">0</strong></div></div>
+        <div class="panel"><h3>Status pesanan</h3><div id="reportStatus"></div></div>
+      </section>
+    </main>
+  </section>
+
+  <div id="orderModal" class="modal hidden"><div class="modal-card large"><div class="modal-head"><div><p class="eyebrow">ORDER</p><h2>Pesanan baru</h2></div><button class="close-btn" data-close="orderModal">×</button></div>
+    <form id="orderForm">
+      <div class="form-grid"><label>Nama pelanggan<input id="orderCustomer" required></label><label>No. telepon<input id="orderPhone" type="tel" inputmode="numeric" maxlength="14" placeholder="10–14 digit" required></label></div>
+      <label>Catatan<textarea id="orderNotes" rows="2"></textarea></label>
+      <div class="modal-subhead"><h3>Layanan <span class="hint">(minimal 1, maksimal 5)</span></h3><button type="button" class="btn btn-secondary" id="addItemBtn">+ Tambah layanan</button></div>
+      <div id="orderItems"></div>
+      <div class="form-grid"><label>Metode pembayaran<select id="paymentMethod"><option value="cash">Cash</option><option value="transfer">Transfer</option><option value="qris">QRIS</option></select></label><label>Dibayar<input id="paidAmount" type="number" min="0" value="0"></label></div>
+      <div class="order-total"><span>Total</span><strong id="orderTotal">Rp0</strong></div>
+      <div class="modal-actions"><button type="button" class="btn btn-secondary" data-close="orderModal">Batal</button><button class="btn btn-primary" type="submit">Simpan pesanan</button></div>
+    </form>
+  </div></div>
+
+  <div id="serviceModal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><p class="eyebrow">MASTER</p><h2 id="serviceModalTitle">Layanan baru</h2></div><button class="close-btn" data-close="serviceModal">×</button></div>
+    <form id="serviceForm"><input id="serviceId" type="hidden"><label>Nama layanan<input id="serviceName" required></label><label>Harga<input id="servicePrice" type="number" min="0" required></label><label class="check-row"><input id="serviceActive" type="checkbox" checked> Aktif</label><div class="modal-actions"><button type="button" class="btn btn-secondary" data-close="serviceModal">Batal</button><button class="btn btn-primary">Simpan</button></div></form>
+  </div></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
