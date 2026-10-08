@@ -1,6 +1,6 @@
-# Alastempur POS v3 — Supabase Integrated
+# Alastempur POS v1 — Supabase Integrated
 
-Versi ini memperbaiki versi sebelumnya dengan:
+Versi ini memiliki fitur : 
 - Branding Alastempur, tampilan minimalis/responsive.
 - Supabase Auth: Login, Register, Forgot Password, Reset Password, Logout.
 - Profile otomatis dibuat setelah register.
