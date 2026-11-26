@@ -1,0 +1,14 @@
+# Dependencies and local test evidence
+node_modules/
+tmp/
+
+# Local Python cache
+__pycache__/
+*.py[cod]
+
+# Local assignment references and generated artifacts
+/Module_3_Test_Artifacts*.xlsx
+/Modul_3_TDS_TTM*.xlsx
+/TDS_TTM*.docx
+/TDS_TTM*.txt
+/White_Box_Test_*.docx

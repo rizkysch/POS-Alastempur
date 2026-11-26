@@ -3,6 +3,6 @@
 // NEVER put a Supabase service_role/secret key in this file.
 
 window.APP_CONFIG = {
-  supabaseUrl: "https://jrvshbksocibkjoqqfmp.supabase.co",
-  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpydnNoYmtzb2NpYmtqb3FxZm1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0ODAzMjYsImV4cCI6MjEwNzA1NjMyNn0.nFLMYzbfeWAmRIRFJXBQHZaIqEp-tjhy-XNFUkBKo3M"
+  supabaseUrl: "https://ojmkjhravwwlwbmeiagl.supabase.co",
+  supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9qbWtqaHJhdnd3bHdibWVpYWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0NzQ0NzcsImV4cCI6MjEwNzA1MDQ3N30.1SudZ0cJaPKbqgRxxY2MquKcZrp6A08MiFC06uoiRds"
 };

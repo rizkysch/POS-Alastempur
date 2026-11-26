@@ -8,7 +8,9 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null default 'Operator',
   phone varchar(14),
-  role text not null default 'kasir' check (role in ('admin','kasir','pegawai')),
+  email text,
+  role text not null default 'kasir' check (role in ('superadmin','admin','kasir','pegawai')),
+  is_active boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   constraint profiles_phone_format check (phone is null or phone ~ '^[0-9]{10,14}$')
@@ -24,6 +26,7 @@ create table if not exists public.services (
 
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
+  invoice_number text not null unique,
   order_code text not null unique,
   customer_name text not null,
   phone varchar(14) not null,
@@ -31,6 +34,8 @@ create table if not exists public.orders (
   status text not null default 'baru' check (status in ('baru','diproses','dicuci','dikeringkan','quality_check','siap_diambil','selesai')),
   payment_method text not null default 'cash' check (payment_method in ('cash','transfer','qris')),
   paid_amount numeric(14,2) not null default 0 check (paid_amount >= 0),
+  payment_amount numeric(14,2) not null default 0 check (payment_amount >= 0),
+  payment_status text not null default 'BELUM LUNAS' check (payment_status in ('LUNAS','BELUM LUNAS')),
   total numeric(14,2) not null default 0 check (total >= 0),
   created_by uuid references auth.users(id) on delete set null,
   created_at timestamptz not null default now(),
@@ -39,10 +44,18 @@ create table if not exists public.orders (
   constraint orders_paid_not_over_total check (paid_amount <= total)
 );
 
+-- Also add this field when schema.sql is rerun against an older orders table.
+alter table public.orders add column if not exists customer_name text;
+
 create table if not exists public.order_items (
   id uuid primary key default gen_random_uuid(),
   order_id uuid not null references public.orders(id) on delete cascade,
   service_id uuid references public.services(id) on delete set null,
+  shoe_name text not null,
+  brand text,
+  color text,
+  material text,
+  condition_notes text,
   service_name text not null,
   quantity integer not null check (quantity >= 1),
   unit_price numeric(14,2) not null check (unit_price >= 0),
@@ -57,15 +70,19 @@ security definer
 set search_path = public
 as $$
 begin
-  insert into public.profiles (id, full_name, phone)
+  insert into public.profiles (id, full_name, phone, email, role, is_active)
   values (
     new.id,
     coalesce(nullif(new.raw_user_meta_data->>'full_name',''), split_part(coalesce(new.email,'operator'),'@',1)),
-    nullif(new.raw_user_meta_data->>'phone','')
+    nullif(new.raw_user_meta_data->>'phone',''),
+    new.email,
+    'kasir',
+    true
   )
   on conflict (id) do update set
     full_name = excluded.full_name,
     phone = excluded.phone,
+    email = excluded.email,
     updated_at = now();
   return new;
 end;
@@ -152,6 +169,6 @@ begin
 exception when duplicate_object then null;
 end $$;
 
--- Setelah akun pertama berhasil REGISTER, ambil UUID user dari
--- Supabase -> Authentication -> Users lalu jadikan admin dengan:
--- update public.profiles set role='admin' where id='UUID_USER';
+-- Setelah menjalankan migration_superadmin.sql, ambil UUID akun pertama dari
+-- Supabase -> Authentication -> Users lalu jadikan super admin dengan:
+-- update public.profiles set role='superadmin' where id='UUID_USER';
