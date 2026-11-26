@@ -1,0 +1,2 @@
+[functions.admin-cashier]
+verify_jwt = true
